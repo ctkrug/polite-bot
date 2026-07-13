@@ -116,8 +116,24 @@ function wireFixButton(item, fix) {
   });
 }
 
+let lastReport = null;
+
+function buildMarkdownReport(report) {
+  const lines = [`## polite_bot verdict: ${report.verdict.toUpperCase()}`, ""];
+  if (report.findings.length === 0) {
+    lines.push("No findings — this scraper looks polite.");
+  } else {
+    for (const finding of report.findings) {
+      lines.push(`- **L${finding.line}** — ${finding.message}`);
+    }
+  }
+  lines.push("", "_scored with polite_bot — https://github.com/ctkrug/polite-bot_");
+  return lines.join("\n");
+}
+
 function renderScore(json) {
   const report = JSON.parse(json);
+  lastReport = report;
 
   verdictStatus.textContent = `verdict: ${report.verdict}`;
   verdictStatus.className = `verdict-status verdict-${report.verdict}`;
@@ -195,6 +211,19 @@ async function main() {
   robotsAgentInput.addEventListener("input", scheduleRobotsCheck);
   robotsPathInput.addEventListener("input", scheduleRobotsCheck);
   robotsTxtInput.addEventListener("input", scheduleRobotsCheck);
+
+  const copyReportBtn = document.getElementById("copy-report-btn");
+  const copyReportStatus = document.getElementById("copy-report-status");
+  copyReportBtn.addEventListener("click", async () => {
+    if (!lastReport) return;
+    try {
+      await navigator.clipboard.writeText(buildMarkdownReport(lastReport));
+      copyReportStatus.textContent = "copied!";
+    } catch (err) {
+      copyReportStatus.textContent = "copy failed — select and copy manually";
+      console.error(err);
+    }
+  });
 }
 
 main();
