@@ -4,11 +4,13 @@
 //! browser — nothing pasted here ever touches a server.
 
 mod analyzer;
+mod fixer;
 mod robots;
 
 use wasm_bindgen::prelude::*;
 
-pub use analyzer::{analyze, PolitenessScore, Verdict};
+pub use analyzer::{analyze, Finding, PolitenessScore, Verdict};
+pub use fixer::{suggest_user_agent_fix, FixSuggestion};
 pub use robots::{parse as parse_robots, RobotsRules};
 
 /// Returns the crate version, mostly so the site can prove the wasm module loaded.
