@@ -1,4 +1,4 @@
-import init, { version, score_scraper } from "./pkg/politebot_core.js";
+import init, { version, score_scraper, suggest_fix } from "./pkg/politebot_core.js";
 
 const EXAMPLE = `import requests
 
@@ -10,6 +10,45 @@ const sourceInput = document.getElementById("source-input");
 const verdictStatus = document.getElementById("verdict-status");
 const findingsList = document.getElementById("findings-list");
 const engineStatus = document.getElementById("engine-status");
+const findingTemplate = document.getElementById("finding-template");
+
+function buildFindingItem(finding) {
+  const item = findingTemplate.content.firstElementChild.cloneNode(true);
+  item.querySelector(".line-no").textContent = `L${finding.line}`;
+  item.querySelector(".finding-message").textContent = finding.message;
+
+  const fixJson = suggest_fix(sourceInput.value, finding.line);
+  if (fixJson) {
+    wireFixButton(item, JSON.parse(fixJson));
+  }
+
+  return item;
+}
+
+function wireFixButton(item, fix) {
+  const fixBtn = item.querySelector(".fix-btn");
+  const fixPanel = item.querySelector(".fix-panel");
+  const diffEl = item.querySelector(".fix-diff");
+  const copyBtn = item.querySelector(".copy-btn");
+  const copyStatus = item.querySelector(".copy-status");
+
+  fixBtn.hidden = false;
+  diffEl.textContent = fix.diff;
+
+  fixBtn.addEventListener("click", () => {
+    fixPanel.hidden = !fixPanel.hidden;
+  });
+
+  copyBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(fix.patched_source);
+      copyStatus.textContent = "copied!";
+    } catch (err) {
+      copyStatus.textContent = "copy failed — select and copy manually";
+      console.error(err);
+    }
+  });
+}
 
 function renderScore(json) {
   const report = JSON.parse(json);
@@ -19,13 +58,7 @@ function renderScore(json) {
 
   findingsList.innerHTML = "";
   for (const finding of report.findings) {
-    const item = document.createElement("li");
-    const lineNo = document.createElement("span");
-    lineNo.className = "line-no";
-    lineNo.textContent = `L${finding.line}`;
-    item.appendChild(lineNo);
-    item.appendChild(document.createTextNode(finding.message));
-    findingsList.appendChild(item);
+    findingsList.appendChild(buildFindingItem(finding));
   }
 }
 
