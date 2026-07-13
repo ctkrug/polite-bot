@@ -1,5 +1,7 @@
 # polite_bot
 
+[![CI](https://github.com/ctkrug/polite-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/ctkrug/polite-bot/actions/workflows/ci.yml)
+
 **Paste your scraping script. Get a politeness score.**
 
 polite_bot is a static analyzer for web scrapers. Paste a Python `requests` loop
