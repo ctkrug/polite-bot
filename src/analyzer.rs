@@ -147,6 +147,13 @@ pub fn analyze(source: &str) -> PolitenessScore {
             line: first_request_line(source),
             message: "no User-Agent header found — scrapers should identify themselves".into(),
         });
+    } else if let Some(line) = default_user_agent_line(source) {
+        findings.push(Finding {
+            line,
+            message: "User-Agent looks like a request library's default string — \
+                      set a real, distinguishing identifier instead"
+                .into(),
+        });
     }
 
     if backoff_line.is_none() {

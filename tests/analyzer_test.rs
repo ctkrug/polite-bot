@@ -42,6 +42,24 @@ fn recognizes_tenacity_retry_decorator_as_backoff() {
 }
 
 #[test]
+fn flags_default_library_user_agent_as_distinct_finding() {
+    let src = "import time, requests\nheaders = {\"User-Agent\": \"python-requests/2.31.0\"}\nfor url in urls:\n    requests.get(url, headers=headers)\n    time.sleep(1)\n";
+    let score = analyze(src);
+    assert_eq!(score.verdict, Verdict::Yellow);
+    assert_eq!(score.findings.len(), 1);
+    assert!(score.findings[0].message.contains("default string"));
+    assert_eq!(score.findings[0].line, 2);
+}
+
+#[test]
+fn custom_user_agent_string_produces_no_default_finding() {
+    let src = "import time, requests\nheaders = {\"User-Agent\": \"my-research-bot/1.0\"}\nrequests.get(url, headers=headers)\ntime.sleep(1)\n";
+    let score = analyze(src);
+    assert_eq!(score.verdict, Verdict::Green);
+    assert!(score.findings.is_empty());
+}
+
+#[test]
 fn unrecognized_source_degrades_to_yellow_instead_of_red() {
     let src = "print(\"hello world\")\nlet x = 1 + 1;\n";
     let score = analyze(src);
