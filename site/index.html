@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>polite_bot — score your scraper's manners</title>
+    <meta
+      name="description"
+      content="Paste your scraping script, get a politeness score — rate limits, missing User-Agent, robots.txt violations — before you get IP-banned."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230a0f0c'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='700' fill='%2335e08a' text-anchor='middle'%3E%3E%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=JetBrains+Mono:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wordmark">polite_bot<span class="cursor" aria-hidden="true">&#9608;</span></div>
+      <p class="tagline">paste a scraper, get a politeness score</p>
+      <a class="repo-link" href="https://github.com/ctkrug/polite-bot" target="_blank" rel="noopener">
+        source
+      </a>
+    </header>
+
+    <main class="workspace">
+      <section class="pane code-pane" aria-labelledby="code-pane-label">
+        <div class="pane-header">
+          <span id="code-pane-label">scraper.py</span>
+        </div>
+        <textarea
+          id="source-input"
+          class="code-input"
+          spellcheck="false"
+          placeholder="paste a scraping script here..."
+        ></textarea>
+      </section>
+
+      <section class="pane verdict-pane" aria-live="polite">
+        <div class="pane-header">
+          <span>verdict</span>
+        </div>
+        <div id="verdict-status" class="verdict-status verdict-pending">
+          loading engine&hellip;
+        </div>
+        <ul id="findings-list" class="findings-list"></ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span id="engine-status">engine: connecting</span>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
