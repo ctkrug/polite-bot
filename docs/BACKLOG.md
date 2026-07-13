@@ -44,13 +44,13 @@ The first epic is the demo. Nothing else gets built before this works.
     Node's default `node-fetch`) as a distinct finding from "missing
     entirely," since a default string is still not real identification.
 
-- [ ] **2.3 — Line-accurate findings rendered in the editor.**
+- [x] **2.3 — Line-accurate findings rendered in the editor.**
   - Every finding carries a 1-based line number pointing at the offending
     call (implemented in `politebot-core`; this story wires it into the UI).
   - Findings render as colored gutter markers in the paste editor, not just
     a disconnected list.
 
-- [ ] **2.4 — Design polish: gutter markers.**
+- [x] **2.4 — Design polish: gutter markers.**
   - Gutter markers use `docs/DESIGN.md`'s verdict palette (`--warn` /
     `--danger`) rather than a generic red dot, and fade in with the 90ms
     reveal transition instead of appearing instantly.
