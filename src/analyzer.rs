@@ -27,6 +27,10 @@ impl fmt::Display for Verdict {
 pub struct Finding {
     pub line: usize,
     pub message: String,
+    /// Stable identifier for the rule that produced this finding (e.g.
+    /// `"missing_user_agent"`), so the UI can look up a one-paragraph
+    /// explanation without string-matching on `message` (Story 3.1).
+    pub rule_id: &'static str,
 }
 
 #[derive(Debug, Clone)]
@@ -44,9 +48,10 @@ impl PolitenessScore {
             .iter()
             .map(|f| {
                 format!(
-                    r#"{{"line":{},"message":{}}}"#,
+                    r#"{{"line":{},"message":{},"rule_id":{}}}"#,
                     f.line,
-                    json_string(&f.message)
+                    json_string(&f.message),
+                    json_string(f.rule_id)
                 )
             })
             .collect::<Vec<_>>()
@@ -132,6 +137,7 @@ pub fn analyze(source: &str) -> PolitenessScore {
                 message: "couldn't recognize a request-library pattern in this source \
                           — verify User-Agent and rate limiting manually"
                     .into(),
+                rule_id: "unrecognized_source",
             }],
         };
     }
@@ -148,6 +154,7 @@ pub fn analyze(source: &str) -> PolitenessScore {
         findings.push(Finding {
             line: first_request_line(source),
             message: "no User-Agent header found — scrapers should identify themselves".into(),
+            rule_id: "missing_user_agent",
         });
     } else if let Some(line) = default_user_agent_line(source) {
         findings.push(Finding {
@@ -155,6 +162,7 @@ pub fn analyze(source: &str) -> PolitenessScore {
             message: "User-Agent looks like a request library's default string — \
                       set a real, distinguishing identifier instead"
                 .into(),
+            rule_id: "default_user_agent",
         });
     }
 
@@ -162,6 +170,7 @@ pub fn analyze(source: &str) -> PolitenessScore {
         findings.push(Finding {
             line: first_request_line(source),
             message: "no rate limiting or backoff detected between requests".into(),
+            rule_id: "missing_rate_limit",
         });
     }
 

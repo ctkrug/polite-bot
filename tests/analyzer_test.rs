@@ -31,6 +31,8 @@ fn to_json_produces_well_formed_output() {
     let json = score.to_json();
     assert!(json.starts_with(r#"{"verdict":"red","findings":["#));
     assert!(json.contains(r#""line":1"#));
+    assert!(json.contains(r#""rule_id":"missing_user_agent""#));
+    assert!(json.contains(r#""rule_id":"missing_rate_limit""#));
 }
 
 #[test]
