@@ -18,7 +18,9 @@ fn preserves_indentation_of_the_original_line() {
     let src = "def scrape():\n        requests.get(url)\n";
     let fix = suggest_user_agent_fix(src, 2).unwrap();
     assert!(fix.patched_source.contains("        headers = {"));
-    assert!(fix.patched_source.contains("        requests.get(url, headers=headers)"));
+    assert!(fix
+        .patched_source
+        .contains("        requests.get(url, headers=headers)"));
 }
 
 #[test]

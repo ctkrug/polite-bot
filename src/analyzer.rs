@@ -107,7 +107,9 @@ fn default_user_agent_line(source: &str) -> Option<usize> {
         .find(|(_, line)| {
             let lower = line.to_ascii_lowercase();
             USER_AGENT_SIGNALS.iter().any(|kw| line.contains(kw))
-                && DEFAULT_USER_AGENT_SIGNALS.iter().any(|kw| lower.contains(kw))
+                && DEFAULT_USER_AGENT_SIGNALS
+                    .iter()
+                    .any(|kw| lower.contains(kw))
         })
         .map(|(i, _)| i + 1)
 }

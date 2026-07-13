@@ -87,10 +87,14 @@ fn patch_fetch_call(line: &str) -> Option<String> {
         // A second argument already exists; don't guess how to merge into it.
         return None;
     }
-    let insertion = format!(
-        "{args}, {{ headers: {{ \"User-Agent\": \"{DEFAULT_USER_AGENT}\" }} }}"
-    );
-    Some(format!("{}{}{}", &line[..open + 1], insertion, &line[close..]))
+    let insertion =
+        format!("{args}, {{ headers: {{ \"User-Agent\": \"{DEFAULT_USER_AGENT}\" }} }}");
+    Some(format!(
+        "{}{}{}",
+        &line[..open + 1],
+        insertion,
+        &line[close..]
+    ))
 }
 
 fn leading_whitespace(line: &str) -> String {
@@ -101,7 +105,10 @@ fn leading_whitespace(line: &str) -> String {
 /// scanning for the call's matching closing paren (bracket-depth aware, so
 /// nested calls like `requests.get(build_url(x))` still patch correctly).
 fn patch_python_requests_call(line: &str) -> Option<String> {
-    let open = find_call_open_paren(line, &["requests.get(", "requests.post(", ".get(", ".post("])?;
+    let open = find_call_open_paren(
+        line,
+        &["requests.get(", "requests.post(", ".get(", ".post("],
+    )?;
     let close = find_matching_close_paren(line, open)?;
 
     let args = line[open + 1..close].trim();
@@ -111,7 +118,12 @@ fn patch_python_requests_call(line: &str) -> Option<String> {
         format!("{args}, headers=headers")
     };
 
-    Some(format!("{}{}{}", &line[..open + 1], insertion, &line[close..]))
+    Some(format!(
+        "{}{}{}",
+        &line[..open + 1],
+        insertion,
+        &line[close..]
+    ))
 }
 
 fn find_call_open_paren(line: &str, markers: &[&str]) -> Option<usize> {
