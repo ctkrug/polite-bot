@@ -90,7 +90,24 @@ const USER_AGENT_SIGNALS: &[&str] = &["User-Agent", "user_agent", "user-agent"];
 /// backlog expands on: a declared User-Agent, and some form of rate
 /// limiting/backoff between requests. Never panics on arbitrary input —
 /// worst case it finds nothing and reports Red.
+///
+/// Source that doesn't contain any recognized request-call pattern degrades
+/// to Yellow with an explanatory finding rather than a false Red — the
+/// analyzer has no request line to point at, so it can't confidently claim
+/// the code is impolite.
 pub fn analyze(source: &str) -> PolitenessScore {
+    if !has_recognized_request_pattern(source) {
+        return PolitenessScore {
+            verdict: Verdict::Yellow,
+            findings: vec![Finding {
+                line: 1,
+                message: "couldn't recognize a request-library pattern in this source \
+                          — verify User-Agent and rate limiting manually"
+                    .into(),
+            }],
+        };
+    }
+
     let has_user_agent = USER_AGENT_SIGNALS.iter().any(|kw| source.contains(kw));
     let backoff_line = source
         .lines()
@@ -122,10 +139,17 @@ pub fn analyze(source: &str) -> PolitenessScore {
     PolitenessScore { verdict, findings }
 }
 
+const REQUEST_SIGNALS: &[&str] = &[".get(", ".post(", "fetch(", "urlopen(", "requests."];
+
+fn has_recognized_request_pattern(source: &str) -> bool {
+    source
+        .lines()
+        .any(|line| REQUEST_SIGNALS.iter().any(|kw| line.contains(kw)))
+}
+
 /// Best-effort line to attach a finding to: the first line that looks like
 /// an outbound request call, or line 1 if nothing matches.
 fn first_request_line(source: &str) -> usize {
-    const REQUEST_SIGNALS: &[&str] = &[".get(", ".post(", "fetch(", "urlopen(", "requests."];
     source
         .lines()
         .enumerate()

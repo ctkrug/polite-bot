@@ -42,6 +42,21 @@ fn recognizes_tenacity_retry_decorator_as_backoff() {
 }
 
 #[test]
+fn unrecognized_source_degrades_to_yellow_instead_of_red() {
+    let src = "print(\"hello world\")\nlet x = 1 + 1;\n";
+    let score = analyze(src);
+    assert_eq!(score.verdict, Verdict::Yellow);
+    assert_eq!(score.findings.len(), 1);
+    assert_eq!(score.findings[0].line, 1);
+}
+
+#[test]
+fn empty_source_degrades_to_yellow_instead_of_red() {
+    let score = analyze("");
+    assert_eq!(score.verdict, Verdict::Yellow);
+}
+
+#[test]
 fn never_panics_on_empty_or_binary_looking_input() {
     let _ = analyze("");
     let _ = analyze("\u{0}\u{1}not real code\u{7f}");
