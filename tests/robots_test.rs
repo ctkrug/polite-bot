@@ -23,9 +23,8 @@ fn grouped_user_agents_share_rules() {
 
 #[test]
 fn specific_agent_group_beats_wildcard() {
-    let robots = parse_robots(
-        "User-agent: *\nDisallow: /\n\nUser-agent: PoliteBot\nDisallow:\nAllow: /\n",
-    );
+    let robots =
+        parse_robots("User-agent: *\nDisallow: /\n\nUser-agent: PoliteBot\nDisallow:\nAllow: /\n");
     assert!(robots.is_allowed("PoliteBot", "/anything"));
     assert!(!robots.is_allowed("OtherBot", "/anything"));
 }
@@ -45,6 +44,8 @@ fn missing_robots_txt_allows_everything() {
 
 #[test]
 fn comments_and_malformed_lines_are_ignored() {
-    let robots = parse_robots("# a comment\nnot a directive\nUser-agent: *\nDisallow: /x # trailing comment\n");
+    let robots = parse_robots(
+        "# a comment\nnot a directive\nUser-agent: *\nDisallow: /x # trailing comment\n",
+    );
     assert!(!robots.is_allowed("AnyBot", "/x/y"));
 }

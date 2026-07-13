@@ -42,10 +42,19 @@ impl PolitenessScore {
         let findings = self
             .findings
             .iter()
-            .map(|f| format!(r#"{{"line":{},"message":{}}}"#, f.line, json_string(&f.message)))
+            .map(|f| {
+                format!(
+                    r#"{{"line":{},"message":{}}}"#,
+                    f.line,
+                    json_string(&f.message)
+                )
+            })
             .collect::<Vec<_>>()
             .join(",");
-        format!(r#"{{"verdict":"{}","findings":[{}]}}"#, self.verdict, findings)
+        format!(
+            r#"{{"verdict":"{}","findings":[{}]}}"#,
+            self.verdict, findings
+        )
     }
 }
 
@@ -64,7 +73,14 @@ fn json_string(s: &str) -> String {
     out
 }
 
-const BACKOFF_SIGNALS: &[&str] = &["time.sleep", "asyncio.sleep", "sleep(", "setTimeout", "RateLimiter", "backoff"];
+const BACKOFF_SIGNALS: &[&str] = &[
+    "time.sleep",
+    "asyncio.sleep",
+    "sleep(",
+    "setTimeout",
+    "RateLimiter",
+    "backoff",
+];
 const USER_AGENT_SIGNALS: &[&str] = &["User-Agent", "user_agent", "user-agent"];
 
 /// Scans pasted scraper source line by line for the two signals BUILD's

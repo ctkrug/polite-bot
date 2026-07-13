@@ -51,7 +51,11 @@ pub fn parse(text: &str) -> RobotsRules {
                             && group.crawl_delay.is_none()
                 );
                 if extend_current {
-                    current.as_mut().unwrap().agents.push(value.to_ascii_lowercase());
+                    current
+                        .as_mut()
+                        .unwrap()
+                        .agents
+                        .push(value.to_ascii_lowercase());
                 } else {
                     flush_group(&mut current, &mut groups);
                     current = Some(RuleGroup {
@@ -97,7 +101,11 @@ impl RobotsRules {
             .groups
             .iter()
             .find(|g| g.agents.iter().any(|a| a == &agent))
-            .or_else(|| self.groups.iter().find(|g| g.agents.iter().any(|a| a == "*")));
+            .or_else(|| {
+                self.groups
+                    .iter()
+                    .find(|g| g.agents.iter().any(|a| a == "*"))
+            });
 
         let Some(group) = group else {
             return true;
@@ -129,7 +137,11 @@ impl RobotsRules {
         self.groups
             .iter()
             .find(|g| g.agents.iter().any(|a| a == &agent))
-            .or_else(|| self.groups.iter().find(|g| g.agents.iter().any(|a| a == "*")))
+            .or_else(|| {
+                self.groups
+                    .iter()
+                    .find(|g| g.agents.iter().any(|a| a == "*"))
+            })
             .and_then(|g| g.crawl_delay)
     }
 }
