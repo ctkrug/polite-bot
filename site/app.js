@@ -81,6 +81,7 @@ function buildFindingItem(finding) {
     RULE_EXPLANATIONS[finding.rule_id] || "No further explanation available for this rule.";
   whyBtn.addEventListener("click", () => {
     whyPanel.hidden = !whyPanel.hidden;
+    whyBtn.setAttribute("aria-expanded", String(!whyPanel.hidden));
   });
 
   const fixJson = suggest_fix(sourceInput.value, finding.line);
@@ -103,6 +104,7 @@ function wireFixButton(item, fix) {
 
   fixBtn.addEventListener("click", () => {
     fixPanel.hidden = !fixPanel.hidden;
+    fixBtn.setAttribute("aria-expanded", String(!fixPanel.hidden));
   });
 
   copyBtn.addEventListener("click", async () => {
