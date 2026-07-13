@@ -15,6 +15,15 @@ fn allow_overrides_more_specific_disallow() {
 }
 
 #[test]
+fn equal_length_allow_and_disallow_favors_allow() {
+    // When an Allow and a Disallow rule match with equal specificity
+    // (same path length), the least-restrictive rule wins per robots.txt
+    // convention — ties must not silently fall through to blocking.
+    let robots = parse_robots("User-agent: *\nDisallow: /path\nAllow: /path\n");
+    assert!(robots.is_allowed("AnyBot", "/path"));
+}
+
+#[test]
 fn grouped_user_agents_share_rules() {
     let robots = parse_robots("User-agent: BotA\nUser-agent: BotB\nDisallow: /no-bots\n");
     assert!(!robots.is_allowed("BotA", "/no-bots/page"));
