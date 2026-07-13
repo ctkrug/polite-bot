@@ -32,3 +32,14 @@ pub fn score_scraper(source: &str) -> String {
 pub fn check_robots(robots_txt: &str, agent: &str, path: &str) -> bool {
     parse_robots(robots_txt).is_allowed(agent, path)
 }
+
+/// Suggests a fix for the missing-User-Agent finding at `line` (1-based) in
+/// `source`. Returns a JSON `{"diff": "...", "patched_source": "..."}`
+/// object, or an empty string if no fix is available for that line's call
+/// shape.
+#[wasm_bindgen]
+pub fn suggest_fix(source: &str, line: usize) -> String {
+    suggest_user_agent_fix(source, line)
+        .map(|f| f.to_json())
+        .unwrap_or_default()
+}
