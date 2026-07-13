@@ -1,4 +1,4 @@
-import init, { version, score_scraper, suggest_fix } from "./pkg/politebot_core.js";
+import init, { version, score_scraper, suggest_fix, check_robots } from "./pkg/politebot_core.js";
 
 const EXAMPLE = `import requests
 
@@ -68,6 +68,34 @@ function scheduleScore() {
   debounceHandle = setTimeout(() => renderScore(score_scraper(sourceInput.value)), 150);
 }
 
+const robotsAgentInput = document.getElementById("robots-agent");
+const robotsPathInput = document.getElementById("robots-path");
+const robotsTxtInput = document.getElementById("robots-txt");
+const robotsResult = document.getElementById("robots-result");
+
+function renderRobotsCheck() {
+  const path = robotsPathInput.value.trim();
+  if (!path) {
+    robotsResult.textContent = "enter a target path to check";
+    robotsResult.className = "robots-result";
+    return;
+  }
+
+  const agent = robotsAgentInput.value.trim() || "*";
+  const allowed = check_robots(robotsTxtInput.value, agent, path);
+
+  robotsResult.textContent = allowed
+    ? `allowed: ${agent} may request ${path}`
+    : `disallowed: robots.txt blocks ${agent} from ${path}`;
+  robotsResult.className = `robots-result robots-result-${allowed ? "allow" : "deny"}`;
+}
+
+let robotsDebounceHandle;
+function scheduleRobotsCheck() {
+  clearTimeout(robotsDebounceHandle);
+  robotsDebounceHandle = setTimeout(renderRobotsCheck, 150);
+}
+
 async function main() {
   try {
     await init();
@@ -83,6 +111,10 @@ async function main() {
   sourceInput.value = EXAMPLE;
   sourceInput.addEventListener("input", scheduleScore);
   renderScore(score_scraper(sourceInput.value));
+
+  robotsAgentInput.addEventListener("input", scheduleRobotsCheck);
+  robotsPathInput.addEventListener("input", scheduleRobotsCheck);
+  robotsTxtInput.addEventListener("input", scheduleRobotsCheck);
 }
 
 main();
