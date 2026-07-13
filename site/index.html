@@ -53,8 +53,10 @@
       </section>
 
       <section class="pane verdict-pane" aria-live="polite">
-        <div class="pane-header">
+        <div class="pane-header verdict-pane-header">
           <span>verdict</span>
+          <button type="button" id="copy-report-btn" class="copy-btn">copy report</button>
+          <span id="copy-report-status" class="copy-status" aria-live="polite"></span>
         </div>
         <div id="verdict-status" class="verdict-status verdict-pending">
           loading engine&hellip;
@@ -93,7 +95,11 @@
         <div class="finding-row">
           <span class="line-no"></span>
           <span class="finding-message"></span>
+          <button type="button" class="why-btn">why</button>
           <button type="button" class="fix-btn" hidden>fix</button>
+        </div>
+        <div class="why-panel" hidden>
+          <p class="why-text"></p>
         </div>
         <div class="fix-panel" hidden>
           <pre class="fix-diff"></pre>
