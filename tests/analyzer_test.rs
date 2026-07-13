@@ -34,6 +34,14 @@ fn to_json_produces_well_formed_output() {
 }
 
 #[test]
+fn recognizes_tenacity_retry_decorator_as_backoff() {
+    let src = "headers = {\"User-Agent\": \"my-bot/1.0\"}\n@retry(wait=wait_exponential())\ndef fetch():\n    requests.get(url, headers=headers)\n";
+    let score = analyze(src);
+    assert_eq!(score.verdict, Verdict::Green);
+    assert!(score.findings.is_empty());
+}
+
+#[test]
 fn never_panics_on_empty_or_binary_looking_input() {
     let _ = analyze("");
     let _ = analyze("\u{0}\u{1}not real code\u{7f}");

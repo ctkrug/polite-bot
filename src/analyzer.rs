@@ -80,6 +80,9 @@ const BACKOFF_SIGNALS: &[&str] = &[
     "setTimeout",
     "RateLimiter",
     "backoff",
+    "tenacity",
+    "@retry",
+    "exponential_backoff",
 ];
 const USER_AGENT_SIGNALS: &[&str] = &["User-Agent", "user_agent", "user-agent"];
 
