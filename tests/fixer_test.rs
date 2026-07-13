@@ -69,3 +69,12 @@ fn returns_none_for_out_of_range_line() {
     assert!(suggest_user_agent_fix(src, 0).is_none());
     assert!(suggest_user_agent_fix(src, 99).is_none());
 }
+
+#[test]
+fn to_json_produces_well_formed_output() {
+    let fix = suggest_user_agent_fix("requests.get(url)\n", 1).unwrap();
+    let json = fix.to_json();
+    assert!(json.starts_with(r#"{"diff":"#));
+    assert!(json.contains(r#""patched_source":"#));
+    assert!(json.contains("headers=headers"));
+}
