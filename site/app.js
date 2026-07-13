@@ -47,10 +47,41 @@ function renderGutter(source, findings, verdict) {
   codeGutter.replaceChildren(frag);
 }
 
+const RULE_EXPLANATIONS = {
+  missing_user_agent:
+    "Sites use the User-Agent header to tell real clients apart from anonymous bots. " +
+    "Requests with no User-Agent are the first thing rate limiters and abuse filters " +
+    "flag, and they're the hardest to trace back to you if a site operator wants to " +
+    "reach out before blocking your IP outright.",
+  default_user_agent:
+    "A default User-Agent (the one your library sends automatically, like " +
+    "python-requests/2.x) is easy for a site to bulk-block since thousands of other " +
+    "scrapers send the exact same string. It also gives the target no way to identify " +
+    "or contact you specifically if your traffic causes a problem.",
+  missing_rate_limit:
+    "Hammering a site with back-to-back requests is the single fastest way to get " +
+    "IP-banned, trip a WAF, or — at real scale — generate an abuse complaint against " +
+    "your hosting provider. A small delay or backoff between requests is basic " +
+    "scraping courtesy and costs you almost nothing in wall-clock time.",
+  unrecognized_source:
+    "This source doesn't match a request-call pattern polite_bot recognizes (Python " +
+    "requests/urllib, or JS fetch), so it can't confidently point at a specific line. " +
+    "Double-check manually that outbound requests set a real User-Agent and are " +
+    "throttled.",
+};
+
 function buildFindingItem(finding) {
   const item = findingTemplate.content.firstElementChild.cloneNode(true);
   item.querySelector(".line-no").textContent = `L${finding.line}`;
   item.querySelector(".finding-message").textContent = finding.message;
+
+  const whyBtn = item.querySelector(".why-btn");
+  const whyPanel = item.querySelector(".why-panel");
+  item.querySelector(".why-text").textContent =
+    RULE_EXPLANATIONS[finding.rule_id] || "No further explanation available for this rule.";
+  whyBtn.addEventListener("click", () => {
+    whyPanel.hidden = !whyPanel.hidden;
+  });
 
   const fixJson = suggest_fix(sourceInput.value, finding.line);
   if (fixJson) {
