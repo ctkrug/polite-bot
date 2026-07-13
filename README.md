@@ -25,16 +25,26 @@ Paste a scraping loop. In under a second you get a red/yellow/green verdict,
 the exact line missing a rate limit or header, and a one-click diff that adds
 the recommended fix.
 
-## Planned features
+## Features
 
 - **Static analysis of your code** — detects missing `User-Agent` headers,
-  missing backoff/rate-limit calls, and generic default User-Agent strings,
-  with line-accurate findings.
+  generic/default User-Agent strings (e.g. `python-requests/2.x`), and
+  missing backoff/rate-limit calls (`time.sleep`, `asyncio.sleep`,
+  `setTimeout`, `tenacity`/`@retry`-style retry decorators), with
+  line-accurate findings rendered both as a list and as colored gutter
+  markers in the editor.
 - **A real robots.txt parser** — compiled from Rust to WebAssembly, not a
   regex hack. Understands `User-agent` grouping, `Allow`/`Disallow`
-  precedence, and `Crawl-delay`.
-- **One-click fixes** — turn a finding into a copyable diff that adds the
-  missing header or throttle call.
+  precedence, and `Crawl-delay`. Paste a target path and robots.txt (or
+  leave it empty for allow-all) to cross-check live.
+- **One-click fixes** — a "fix" button on the missing-User-Agent finding
+  reveals a diff and a "copy fixed code" button, for both Python `requests`
+  and JS `fetch` call shapes.
+- **Sample snippets** — "worst case" / "rate-limited only" / "polite"
+  buttons load a scored example with zero typing.
+
+## Planned features
+
 - **Shareable reports** — copy a markdown summary of the verdict for a PR
   description or code review.
 
@@ -60,8 +70,9 @@ scripts/build-wasm.sh
 ```
 
 See [`docs/VISION.md`](docs/VISION.md) for the product vision and design
-decisions, [`docs/BACKLOG.md`](docs/BACKLOG.md) for the build plan, and
-[`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction.
+decisions, [`docs/BACKLOG.md`](docs/BACKLOG.md) for the build plan,
+[`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction, and
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for a map of the codebase.
 
 ## License
 
