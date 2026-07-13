@@ -31,8 +31,15 @@
 
     <main class="workspace">
       <section class="pane code-pane" aria-labelledby="code-pane-label">
-        <div class="pane-header">
+        <div class="pane-header code-pane-header">
           <span id="code-pane-label">scraper.py</span>
+          <div class="example-buttons" role="group" aria-label="try an example">
+            <button type="button" class="example-btn" data-example="worst">worst case</button>
+            <button type="button" class="example-btn" data-example="rateLimited">
+              rate-limited only
+            </button>
+            <button type="button" class="example-btn" data-example="polite">polite</button>
+          </div>
         </div>
         <div class="code-body">
           <div id="code-gutter" class="code-gutter" aria-hidden="true"></div>
