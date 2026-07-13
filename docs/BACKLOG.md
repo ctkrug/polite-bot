@@ -30,7 +30,7 @@ The first epic is the demo. Nothing else gets built before this works.
 
 ## Epic 2 — Static analysis depth
 
-- [ ] **2.1 — Recognize more rate-limiting patterns.**
+- [x] **2.1 — Recognize more rate-limiting patterns.**
   - Recognizes `time.sleep`, `asyncio.sleep`, and `setTimeout`-based
     throttling as satisfying the rate-limit check (already implemented for
     the v0 heuristic; this story extends it to at least one retry/backoff
