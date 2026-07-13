@@ -34,12 +34,15 @@
         <div class="pane-header">
           <span id="code-pane-label">scraper.py</span>
         </div>
-        <textarea
-          id="source-input"
-          class="code-input"
-          spellcheck="false"
-          placeholder="paste a scraping script here..."
-        ></textarea>
+        <div class="code-body">
+          <div id="code-gutter" class="code-gutter" aria-hidden="true"></div>
+          <textarea
+            id="source-input"
+            class="code-input"
+            spellcheck="false"
+            placeholder="paste a scraping script here..."
+          ></textarea>
+        </div>
       </section>
 
       <section class="pane verdict-pane" aria-live="polite">
