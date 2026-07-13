@@ -39,7 +39,7 @@ The first epic is the demo. Nothing else gets built before this works.
     degrades to a **Yellow** verdict with an explanatory finding, rather
     than a false Red.
 
-- [ ] **2.2 — Detect generic/default User-Agent strings.**
+- [x] **2.2 — Detect generic/default User-Agent strings.**
   - Flags default library User-Agent strings (e.g. `python-requests/2.x`,
     Node's default `node-fetch`) as a distinct finding from "missing
     entirely," since a default string is still not real identification.
