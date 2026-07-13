@@ -66,6 +66,17 @@ fn returns_none_for_unsupported_call_shape() {
 }
 
 #[test]
+fn still_patches_a_real_call_after_an_earlier_balanced_string() {
+    // A quoted string earlier on the line (e.g. a log message) must not
+    // trip the string-literal guard for a real call that follows it.
+    let src = "logging.info(\"fetching\"); requests.get(url)\n";
+    let fix = suggest_user_agent_fix(src, 1).expect("real call after a balanced string should patch");
+    assert!(fix
+        .patched_source
+        .contains("requests.get(url, headers=headers)"));
+}
+
+#[test]
 fn declines_a_call_that_is_only_text_inside_a_string_literal() {
     // The analyzer's line-scan can flag a line whose only match is inside a
     // print/log string (e.g. documentation-style text), not a real call. In
