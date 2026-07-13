@@ -144,6 +144,43 @@ textarea:focus-visible {
   text-transform: uppercase;
 }
 
+.code-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.example-buttons {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.example-btn {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  text-transform: none;
+  letter-spacing: normal;
+  background: var(--surface-1);
+  color: var(--text-muted);
+  border: 1px solid var(--surface-1);
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-2);
+  cursor: pointer;
+  transition: border-color var(--motion-ui), color var(--motion-ui), transform 120ms ease-out;
+}
+
+.example-btn:hover {
+  border-color: var(--accent-support);
+  color: var(--accent-support);
+}
+
+.example-btn:active {
+  transform: translateY(1px);
+}
+
 .code-body {
   flex: 1;
   display: flex;
