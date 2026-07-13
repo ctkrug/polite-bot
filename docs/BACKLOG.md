@@ -50,6 +50,11 @@ The first epic is the demo. Nothing else gets built before this works.
   - Findings render as colored gutter markers in the paste editor, not just
     a disconnected list.
 
+- [ ] **2.4 — Design polish: gutter markers.**
+  - Gutter markers use `docs/DESIGN.md`'s verdict palette (`--warn` /
+    `--danger`) rather than a generic red dot, and fade in with the 90ms
+    reveal transition instead of appearing instantly.
+
 ## Epic 3 — Trust & transparency
 
 - [ ] **3.1 — Explain each rule.**
@@ -64,6 +69,11 @@ The first epic is the demo. Nothing else gets built before this works.
   - A "Try an example" control loads at least 3 pre-built snippets (polite,
     rate-limited-only, worst-case) so a first-time visitor sees the tool
     work with zero typing.
+
+- [ ] **3.4 — Design polish: explanations and report styling.**
+  - Rule explanations and the copied markdown report use the same
+    monospace type pairing and terminal-mono voice as the rest of the
+    page — no generic prose-styled help-center look.
 
 ## Epic 4 — Ship polish
 
