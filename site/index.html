@@ -50,6 +50,31 @@
           loading engine&hellip;
         </div>
         <ul id="findings-list" class="findings-list"></ul>
+
+        <div class="robots-check">
+          <div class="pane-header">
+            <span>robots.txt cross-check</span>
+          </div>
+          <label class="robots-field" for="robots-agent">
+            user-agent
+            <input id="robots-agent" type="text" value="polite-bot" autocomplete="off" />
+          </label>
+          <label class="robots-field" for="robots-path">
+            target path
+            <input id="robots-path" type="text" placeholder="/some/path" autocomplete="off" />
+          </label>
+          <label class="robots-field robots-field-textarea" for="robots-txt">
+            robots.txt
+            <textarea
+              id="robots-txt"
+              spellcheck="false"
+              placeholder="paste the target's robots.txt (optional — empty means allow-all)"
+            ></textarea>
+          </label>
+          <div id="robots-result" class="robots-result" aria-live="polite">
+            enter a target path to check
+          </div>
+        </div>
       </section>
     </main>
 
