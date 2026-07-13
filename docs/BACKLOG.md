@@ -65,7 +65,7 @@ The first epic is the demo. Nothing else gets built before this works.
   - A "Copy report" action produces a markdown summary (verdict + findings)
     suitable for pasting into a PR description or code review comment.
 
-- [ ] **3.3 — Sample snippet library.**
+- [x] **3.3 — Sample snippet library.**
   - A "Try an example" control loads at least 3 pre-built snippets (polite,
     rate-limited-only, worst-case) so a first-time visitor sees the tool
     work with zero typing.
