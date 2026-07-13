@@ -38,6 +38,27 @@ fn handles_call_with_no_arguments() {
 }
 
 #[test]
+fn patches_simple_fetch_call() {
+    let src = "async function load() {\n  const res = await fetch(url);\n}\n";
+    let fix = suggest_user_agent_fix(src, 2).unwrap();
+    assert!(fix
+        .patched_source
+        .contains("fetch(url, { headers: { \"User-Agent\": "));
+    assert!(fix.diff.contains("-  const res = await fetch(url);"));
+}
+
+#[test]
+fn declines_fetch_call_with_existing_options_argument() {
+    let src = "fetch(url, { method: \"GET\" })\n";
+    assert!(suggest_user_agent_fix(src, 1).is_none());
+}
+
+#[test]
+fn declines_fetch_call_with_no_arguments() {
+    assert!(suggest_user_agent_fix("fetch()\n", 1).is_none());
+}
+
+#[test]
 fn returns_none_for_unsupported_call_shape() {
     assert!(suggest_user_agent_fix("urlopen(url)\n", 1).is_none());
 }

@@ -30,12 +30,14 @@ pub fn suggest_user_agent_fix(source: &str, line: usize) -> Option<FixSuggestion
     let lines: Vec<&str> = source.lines().collect();
     let idx = line.checked_sub(1)?;
     let original = *lines.get(idx)?;
+    let indent = leading_whitespace(original);
+
+    if let Some(patched_line) = patch_fetch_call(original) {
+        return Some(single_line_fix(&lines, idx, line, original, &patched_line));
+    }
 
     let patched_line = patch_python_requests_call(original)?;
-    let indent = leading_whitespace(original);
-    let header_line = format!(
-        "{indent}headers = {{\"User-Agent\": \"{DEFAULT_USER_AGENT}\"}}"
-    );
+    let header_line = format!("{indent}headers = {{\"User-Agent\": \"{DEFAULT_USER_AGENT}\"}}");
 
     let mut patched_lines: Vec<String> = lines.iter().map(|l| l.to_string()).collect();
     patched_lines[idx] = patched_line.clone();
@@ -51,6 +53,44 @@ pub fn suggest_user_agent_fix(source: &str, line: usize) -> Option<FixSuggestion
         diff,
         patched_source,
     })
+}
+
+/// Builds a [`FixSuggestion`] for a fix that only replaces `original` with
+/// `patched_line` in place, adding no extra header-declaration line above it
+/// (the JS `fetch` fix inlines its headers object into the call).
+fn single_line_fix(
+    lines: &[&str],
+    idx: usize,
+    line: usize,
+    original: &str,
+    patched_line: &str,
+) -> FixSuggestion {
+    let mut patched_lines: Vec<String> = lines.iter().map(|l| l.to_string()).collect();
+    patched_lines[idx] = patched_line.to_string();
+    FixSuggestion {
+        diff: format!("@@ -{line} +{line} @@\n-{original}\n+{patched_line}"),
+        patched_source: patched_lines.join("\n"),
+    }
+}
+
+/// Inserts a `headers: { "User-Agent": ... }` options object into a JS
+/// `fetch(url)` call. If the call already passes a second argument, the
+/// fixer declines rather than risk mangling an existing options object.
+fn patch_fetch_call(line: &str) -> Option<String> {
+    let open = line.find("fetch(").map(|i| i + "fetch(".len() - 1)?;
+    let close = find_matching_close_paren(line, open)?;
+    let args = line[open + 1..close].trim();
+    if args.is_empty() {
+        return None;
+    }
+    if args.contains(',') {
+        // A second argument already exists; don't guess how to merge into it.
+        return None;
+    }
+    let insertion = format!(
+        "{args}, {{ headers: {{ \"User-Agent\": \"{DEFAULT_USER_AGENT}\" }} }}"
+    );
+    Some(format!("{}{}{}", &line[..open + 1], insertion, &line[close..]))
 }
 
 fn leading_whitespace(line: &str) -> String {
