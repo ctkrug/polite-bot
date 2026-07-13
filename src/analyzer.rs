@@ -86,6 +86,32 @@ const BACKOFF_SIGNALS: &[&str] = &[
 ];
 const USER_AGENT_SIGNALS: &[&str] = &["User-Agent", "user_agent", "user-agent"];
 
+/// Default User-Agent strings that request libraries send when the caller
+/// never overrides them. A scraper that hardcodes one of these back in
+/// (usually copy-pasted from a captured request) hasn't actually declared a
+/// real identity — Story 2.2 flags it as a distinct finding.
+const DEFAULT_USER_AGENT_SIGNALS: &[&str] = &[
+    "python-requests",
+    "node-fetch",
+    "go-http-client",
+    "okhttp",
+    "curl/",
+    "wget/",
+    "postmanruntime",
+];
+
+fn default_user_agent_line(source: &str) -> Option<usize> {
+    source
+        .lines()
+        .enumerate()
+        .find(|(_, line)| {
+            let lower = line.to_ascii_lowercase();
+            USER_AGENT_SIGNALS.iter().any(|kw| line.contains(kw))
+                && DEFAULT_USER_AGENT_SIGNALS.iter().any(|kw| lower.contains(kw))
+        })
+        .map(|(i, _)| i + 1)
+}
+
 /// Scans pasted scraper source line by line for the two signals BUILD's
 /// backlog expands on: a declared User-Agent, and some form of rate
 /// limiting/backoff between requests. Never panics on arbitrary input —
