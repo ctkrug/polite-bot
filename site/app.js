@@ -11,6 +11,26 @@ const verdictStatus = document.getElementById("verdict-status");
 const findingsList = document.getElementById("findings-list");
 const engineStatus = document.getElementById("engine-status");
 const findingTemplate = document.getElementById("finding-template");
+const codeGutter = document.getElementById("code-gutter");
+
+function renderGutter(source, findings, verdict) {
+  const lineCount = Math.max(source.split("\n").length, 1);
+  const flaggedLines = new Set(findings.map((f) => f.line));
+  const markerClass = verdict === "red" ? "gutter-marker-danger" : "gutter-marker-warn";
+
+  const frag = document.createDocumentFragment();
+  for (let i = 1; i <= lineCount; i++) {
+    const lineEl = document.createElement("div");
+    lineEl.className = "gutter-line";
+    if (flaggedLines.has(i)) {
+      lineEl.classList.add(markerClass);
+    }
+    lineEl.textContent = String(i);
+    frag.appendChild(lineEl);
+  }
+
+  codeGutter.replaceChildren(frag);
+}
 
 function buildFindingItem(finding) {
   const item = findingTemplate.content.firstElementChild.cloneNode(true);
@@ -60,6 +80,8 @@ function renderScore(json) {
   for (const finding of report.findings) {
     findingsList.appendChild(buildFindingItem(finding));
   }
+
+  renderGutter(sourceInput.value, report.findings, report.verdict);
 }
 
 let debounceHandle;
@@ -110,6 +132,9 @@ async function main() {
   engineStatus.textContent = `engine: politebot-core v${version()}`;
   sourceInput.value = EXAMPLE;
   sourceInput.addEventListener("input", scheduleScore);
+  sourceInput.addEventListener("scroll", () => {
+    codeGutter.scrollTop = sourceInput.scrollTop;
+  });
   renderScore(score_scraper(sourceInput.value));
 
   robotsAgentInput.addEventListener("input", scheduleRobotsCheck);
