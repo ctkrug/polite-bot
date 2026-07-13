@@ -28,20 +28,41 @@ const engineStatus = document.getElementById("engine-status");
 const findingTemplate = document.getElementById("finding-template");
 const codeGutter = document.getElementById("code-gutter");
 
+// Above this many lines, building one gutter <div> per line measurably
+// freezes the tab (a 50k-line paste stalls the main thread for 2-3+
+// seconds worth of layout). Past the cap, skip per-line numbering and
+// render only a height-matched spacer plus the handful of flagged-line
+// markers, positioned by calc() instead of DOM count.
+const GUTTER_LINE_CAP = 2000;
+
 function renderGutter(source, findings, verdict) {
   const lineCount = Math.max(source.split("\n").length, 1);
   const flaggedLines = new Set(findings.map((f) => f.line));
   const markerClass = verdict === "red" ? "gutter-marker-danger" : "gutter-marker-warn";
 
   const frag = document.createDocumentFragment();
-  for (let i = 1; i <= lineCount; i++) {
-    const lineEl = document.createElement("div");
-    lineEl.className = "gutter-line";
-    if (flaggedLines.has(i)) {
-      lineEl.classList.add(markerClass);
+  if (lineCount <= GUTTER_LINE_CAP) {
+    for (let i = 1; i <= lineCount; i++) {
+      const lineEl = document.createElement("div");
+      lineEl.className = "gutter-line";
+      if (flaggedLines.has(i)) {
+        lineEl.classList.add(markerClass);
+      }
+      lineEl.textContent = String(i);
+      frag.appendChild(lineEl);
     }
-    lineEl.textContent = String(i);
-    frag.appendChild(lineEl);
+  } else {
+    const spacer = document.createElement("div");
+    spacer.className = "gutter-spacer";
+    spacer.style.setProperty("--gutter-line-count", lineCount);
+    frag.appendChild(spacer);
+    for (const line of flaggedLines) {
+      const marker = document.createElement("div");
+      marker.className = `gutter-line gutter-line-abs ${markerClass}`;
+      marker.style.setProperty("--gutter-line-index", line - 1);
+      marker.textContent = String(line);
+      frag.appendChild(marker);
+    }
   }
 
   codeGutter.replaceChildren(frag);
