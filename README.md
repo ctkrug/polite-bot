@@ -42,11 +42,8 @@ the recommended fix.
   and JS `fetch` call shapes.
 - **Sample snippets** — "worst case" / "rate-limited only" / "polite"
   buttons load a scored example with zero typing.
-
-## Planned features
-
-- **Shareable reports** — copy a markdown summary of the verdict for a PR
-  description or code review.
+- **Shareable reports** — a "copy report" button produces a markdown summary
+  of the verdict for a PR description or code review comment.
 
 ## Stack
 
