@@ -77,11 +77,11 @@ The first epic is the demo. Nothing else gets built before this works.
 
 ## Epic 4 — Ship polish
 
-- [ ] **4.1 — Design polish pass.**
+- [x] **4.1 — Design polish pass.**
   - The page matches `docs/DESIGN.md`'s tokens and direction at 390px,
     768px, and 1440px widths, with no unstyled native controls.
 
-- [ ] **4.2 — Wasm performance & reliability.**
+- [x] **4.2 — Wasm performance & reliability.**
   - The wasm module loads and scores a 200-line snippet in under 50ms in a
     current Chrome or Firefox.
   - The analyzer never panics on arbitrary UTF-8 input (covered by a
