@@ -57,11 +57,11 @@ The first epic is the demo. Nothing else gets built before this works.
 
 ## Epic 3 — Trust & transparency
 
-- [ ] **3.1 — Explain each rule.**
+- [x] **3.1 — Explain each rule.**
   - Every finding links to a one-paragraph explanation of why it matters
     (IP-ban risk, ToS violation, basic scraping courtesy).
 
-- [ ] **3.2 — Shareable report.**
+- [x] **3.2 — Shareable report.**
   - A "Copy report" action produces a markdown summary (verdict + findings)
     suitable for pasting into a PR description or code review comment.
 
@@ -70,7 +70,7 @@ The first epic is the demo. Nothing else gets built before this works.
     rate-limited-only, worst-case) so a first-time visitor sees the tool
     work with zero typing.
 
-- [ ] **3.4 — Design polish: explanations and report styling.**
+- [x] **3.4 — Design polish: explanations and report styling.**
   - Rule explanations and the copied markdown report use the same
     monospace type pairing and terminal-mono voice as the rest of the
     page — no generic prose-styled help-center look.
