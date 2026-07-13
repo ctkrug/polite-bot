@@ -7,7 +7,7 @@ acceptance criteria — no vibes. Stories are marked `[ ]` until built.
 
 The first epic is the demo. Nothing else gets built before this works.
 
-- [ ] **1.1 (wow) — Paste code, get a red/yellow/green verdict with the exact
+- [x] **1.1 (wow) — Paste code, get a red/yellow/green verdict with the exact
   flagged line.**
   - Pasting a Python `requests` loop with no `User-Agent` and no sleep call
     yields a **Red** verdict with findings pointing at the request line.
