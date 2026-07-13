@@ -1,0 +1,245 @@
+:root {
+  --bg: #0a0f0c;
+  --surface-1: #101914;
+  --surface-2: #182420;
+  --text: #dff5e8;
+  --text-muted: #7fa593;
+  --accent: #35e08a;
+  --accent-support: #3fd1c8;
+  --warn: #f5c451;
+  --danger: #ff5f56;
+
+  --font-display: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas,
+    monospace;
+  --font-ui: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+
+  --radius: 4px;
+  --motion-ui: 150ms ease-out;
+  --motion-reveal: 90ms ease-out;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  color: var(--text);
+  font-family: var(--font-ui);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent-support);
+}
+
+a:focus-visible,
+button:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.site-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--surface-2);
+  flex-wrap: wrap;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.tagline {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.repo-link {
+  font-size: 0.85rem;
+  text-decoration: none;
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  padding: var(--space-1) var(--space-2);
+  transition: border-color var(--motion-ui), color var(--motion-ui);
+}
+
+.repo-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.workspace {
+  flex: 1;
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  min-height: 60vh;
+}
+
+.pane {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.code-pane {
+  flex: 3;
+}
+
+.verdict-pane {
+  flex: 2;
+}
+
+.pane-header {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.code-input {
+  flex: 1;
+  resize: none;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: var(--space-3);
+}
+
+.code-input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--accent), 0 0 24px rgba(53, 224, 138, 0.15);
+}
+
+.verdict-status {
+  margin: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: background-color var(--motion-reveal), color var(--motion-reveal);
+}
+
+.verdict-pending {
+  background: var(--surface-2);
+  color: var(--text-muted);
+}
+
+.verdict-green {
+  background: rgba(53, 224, 138, 0.12);
+  color: var(--accent);
+}
+
+.verdict-yellow {
+  background: rgba(245, 196, 81, 0.12);
+  color: var(--warn);
+}
+
+.verdict-red {
+  background: rgba(255, 95, 86, 0.12);
+  color: var(--danger);
+}
+
+.findings-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 0.9rem;
+}
+
+.findings-list li {
+  padding: var(--space-2);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--danger);
+}
+
+.findings-list li .line-no {
+  color: var(--text-muted);
+  margin-right: var(--space-2);
+}
+
+.site-footer {
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .workspace {
+    flex-direction: column;
+  }
+
+  .code-pane,
+  .verdict-pane {
+    flex: none;
+  }
+
+  .code-pane {
+    min-height: 50vh;
+  }
+}
