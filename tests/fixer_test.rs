@@ -66,6 +66,16 @@ fn returns_none_for_unsupported_call_shape() {
 }
 
 #[test]
+fn declines_a_call_that_is_only_text_inside_a_string_literal() {
+    // The analyzer's line-scan can flag a line whose only match is inside a
+    // print/log string (e.g. documentation-style text), not a real call. In
+    // that case the fixer must not rewrite the string's contents — doing so
+    // silently corrupts the user's source instead of adding a real header.
+    let src = "print(\"call requests.get(url) style\")\n";
+    assert!(suggest_user_agent_fix(src, 1).is_none());
+}
+
+#[test]
 fn returns_none_for_out_of_range_line() {
     let src = "requests.get(url)\n";
     assert!(suggest_user_agent_fix(src, 0).is_none());
