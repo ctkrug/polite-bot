@@ -63,7 +63,11 @@ cargo test
 # build the wasm module + bindings into site/pkg/
 scripts/build-wasm.sh
 
-# then open site/index.html in a browser
+# serve site/ and open it — app.js is loaded as an ES module, which
+# browsers block from a bare file:// URL, so open a local server instead
+# of the file directly
+python3 -m http.server 8000 --directory site
+# then visit http://localhost:8000
 ```
 
 See [`docs/VISION.md`](docs/VISION.md) for the product vision and design
