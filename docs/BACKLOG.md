@@ -17,12 +17,12 @@ The first epic is the demo. Nothing else gets built before this works.
   - The verdict updates within 300ms of pasting, computed entirely
     client-side via the wasm module (no network round trip).
 
-- [ ] **1.2 — One-click "add recommended headers" diff.**
+- [x] **1.2 — One-click "add recommended headers" diff.**
   - Clicking "Fix" on a missing-`User-Agent` finding produces a unified diff
     snippet inserting a `User-Agent` header at the request call site.
   - A "Copy fixed code" button copies the patched snippet to the clipboard.
 
-- [ ] **1.3 — robots.txt cross-check.**
+- [x] **1.3 — robots.txt cross-check.**
   - Pasting or fetching a robots.txt and a target path flags scraped paths
     that are `Disallow`ed for the matching `User-agent` group.
   - An empty, missing, or malformed robots.txt is treated as allow-all —
