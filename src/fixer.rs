@@ -78,6 +78,9 @@ fn single_line_fix(
 /// fixer declines rather than risk mangling an existing options object.
 fn patch_fetch_call(line: &str) -> Option<String> {
     let open = line.find("fetch(").map(|i| i + "fetch(".len() - 1)?;
+    if is_inside_string_literal(line, open) {
+        return None;
+    }
     let close = find_matching_close_paren(line, open)?;
     let args = line[open + 1..close].trim();
     if args.is_empty() {
@@ -109,6 +112,9 @@ fn patch_python_requests_call(line: &str) -> Option<String> {
         line,
         &["requests.get(", "requests.post(", ".get(", ".post("],
     )?;
+    if is_inside_string_literal(line, open) {
+        return None;
+    }
     let close = find_matching_close_paren(line, open)?;
 
     let args = line[open + 1..close].trim();
@@ -131,6 +137,29 @@ fn find_call_open_paren(line: &str, markers: &[&str]) -> Option<usize> {
         .iter()
         .filter_map(|m| line.find(m).map(|i| i + m.len() - 1))
         .min()
+}
+
+/// True if the byte at `pos` falls inside an unescaped `'...'`/`"..."` run
+/// earlier on `line` — i.e. the "call" the fixer found is actually just text
+/// inside a string (a print/log statement, a comment-as-string, a docstring)
+/// rather than real code. Patching there would corrupt the string contents.
+fn is_inside_string_literal(line: &str, pos: usize) -> bool {
+    let mut in_single = false;
+    let mut in_double = false;
+    let mut escaped = false;
+    for c in line[..pos].chars() {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        match c {
+            '\\' => escaped = true,
+            '\'' if !in_double => in_single = !in_single,
+            '"' if !in_single => in_double = !in_double,
+            _ => {}
+        }
+    }
+    in_single || in_double
 }
 
 fn find_matching_close_paren(line: &str, open: usize) -> Option<usize> {
