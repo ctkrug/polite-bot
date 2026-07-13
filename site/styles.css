@@ -285,6 +285,79 @@ textarea:focus-visible {
   }
 }
 
+.robots-check {
+  margin-top: auto;
+  border-top: 1px solid var(--surface-2);
+}
+
+.robots-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-3);
+  margin-top: var(--space-3);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.robots-field-textarea {
+  margin-bottom: var(--space-3);
+}
+
+.robots-field input,
+.robots-field textarea {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  transition: border-color var(--motion-ui), box-shadow var(--motion-ui);
+}
+
+.robots-field textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+  line-height: 1.5;
+}
+
+.robots-field input:hover,
+.robots-field textarea:hover {
+  border-color: var(--accent-support);
+}
+
+.robots-field input:focus,
+.robots-field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 24px rgba(53, 224, 138, 0.15);
+}
+
+.robots-result {
+  margin: 0 var(--space-3) var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  transition: background-color var(--motion-reveal), color var(--motion-reveal);
+}
+
+.robots-result-allow {
+  background: rgba(53, 224, 138, 0.12);
+  color: var(--accent);
+}
+
+.robots-result-deny {
+  background: rgba(255, 95, 86, 0.12);
+  color: var(--danger);
+}
+
 .site-footer {
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--surface-2);
