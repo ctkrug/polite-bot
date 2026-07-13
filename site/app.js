@@ -1,10 +1,25 @@
 import init, { version, score_scraper, suggest_fix, check_robots } from "./pkg/politebot_core.js";
 
-const EXAMPLE = `import requests
+const EXAMPLES = {
+  worst: `import requests
 
 for url in urls:
     requests.get(url)
-`;
+`,
+  rateLimited: `import time, requests
+
+for url in urls:
+    requests.get(url)
+    time.sleep(1)
+`,
+  polite: `import time, requests
+
+headers = {"User-Agent": "my-research-bot/1.0 (+https://example.com/bot)"}
+for url in urls:
+    requests.get(url, headers=headers)
+    time.sleep(1)
+`,
+};
 
 const sourceInput = document.getElementById("source-input");
 const verdictStatus = document.getElementById("verdict-status");
@@ -130,11 +145,20 @@ async function main() {
   }
 
   engineStatus.textContent = `engine: politebot-core v${version()}`;
-  sourceInput.value = EXAMPLE;
+  sourceInput.value = EXAMPLES.worst;
   sourceInput.addEventListener("input", scheduleScore);
   sourceInput.addEventListener("scroll", () => {
     codeGutter.scrollTop = sourceInput.scrollTop;
   });
+  for (const btn of document.querySelectorAll(".example-btn")) {
+    btn.addEventListener("click", () => {
+      const example = EXAMPLES[btn.dataset.example];
+      if (!example) return;
+      clearTimeout(debounceHandle);
+      sourceInput.value = example;
+      renderScore(score_scraper(sourceInput.value));
+    });
+  }
   renderScore(score_scraper(sourceInput.value));
 
   robotsAgentInput.addEventListener("input", scheduleRobotsCheck);
