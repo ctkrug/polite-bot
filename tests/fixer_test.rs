@@ -80,3 +80,18 @@ fn to_json_produces_well_formed_output() {
     assert!(json.contains(r#""patched_source":"#));
     assert!(json.contains("headers=headers"));
 }
+
+#[test]
+fn to_json_escapes_tabs_and_carriage_returns_from_pasted_source() {
+    // patched_source/diff embed the user's raw pasted code verbatim, so a
+    // tab-indented file or CRLF line endings — both common in real-world
+    // scrapers — must not leak an unescaped control character into the
+    // JSON string, or the browser's JSON.parse rejects the whole payload.
+    let src = "import requests\r\n\tfor url in urls:\r\n\t\trequests.get(url)\r\n";
+    let fix = suggest_user_agent_fix(src, 3).unwrap();
+    let json = fix.to_json();
+    assert!(!json.contains('\t'), "raw tab breaks JSON.parse: {json}");
+    assert!(!json.contains('\r'), "raw CR breaks JSON.parse: {json}");
+    assert!(json.contains("\\t"), "tab should be escaped as \\t: {json}");
+    assert!(json.contains("\\r"), "CR should be escaped as \\r: {json}");
+}
