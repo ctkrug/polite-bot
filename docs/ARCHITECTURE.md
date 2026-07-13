@@ -75,7 +75,10 @@ Static, dependency-free, relative-path-only (deployable to a subpath like
 the generated `pkg/politebot_core.js` ES module, initializes the wasm
 instance, and wires:
 
-- the paste editor + its line-number gutter (`renderGutter`, scroll-synced),
+- the paste editor + its line-number gutter (`renderGutter`, scroll-synced;
+  past `GUTTER_LINE_CAP` (2000) lines it skips per-line DOM nodes and
+  renders a height-matched spacer plus only the flagged-line markers, since
+  one `<div>` per line freezes the tab on a very large paste),
 - the verdict banner + findings list + per-finding fix panel,
 - the "try an example" buttons (`EXAMPLES` in `app.js`),
 - the robots.txt cross-check form.
