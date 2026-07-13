@@ -293,6 +293,7 @@ textarea:focus-visible {
   flex: 1;
 }
 
+.why-btn,
 .fix-btn,
 .copy-btn {
   font-family: var(--font-ui);
@@ -306,28 +307,50 @@ textarea:focus-visible {
   transition: border-color var(--motion-ui), color var(--motion-ui), transform 120ms ease-out;
 }
 
+.why-btn:hover,
 .fix-btn:hover,
 .copy-btn:hover {
   border-color: var(--accent-support);
   color: var(--accent);
 }
 
+.why-btn:active,
 .fix-btn:active,
 .copy-btn:active {
   transform: translateY(1px);
 }
 
+.why-btn:disabled,
 .fix-btn:disabled,
 .copy-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+.why-panel,
 .fix-panel {
   margin-top: var(--space-2);
   padding-top: var(--space-2);
   border-top: 1px dashed var(--surface-1);
   animation: reveal var(--motion-reveal);
+}
+
+.why-text {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+.verdict-pane-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.verdict-pane-header span:first-child {
+  flex: 1;
 }
 
 .fix-diff {
