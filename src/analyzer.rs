@@ -71,6 +71,9 @@ fn json_string(s: &str) -> String {
             '"' => out.push_str("\\\""),
             '\\' => out.push_str("\\\\"),
             '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            c if (c as u32) < 0x20 => out.push_str(&format!("\\u{:04x}", c as u32)),
             c => out.push(c),
         }
     }
@@ -200,4 +203,19 @@ fn first_request_line(source: &str) -> usize {
         .find(|(_, line)| REQUEST_SIGNALS.iter().any(|kw| line.contains(kw)))
         .map(|(i, _)| i + 1)
         .unwrap_or(1)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::json_string;
+
+    #[test]
+    fn json_string_escapes_control_characters() {
+        // Findings never embed raw user source today, but json_string is
+        // the same hand-rolled encoder fixer.rs uses for user-controlled
+        // text — keep it correct per RFC 8259 so it stays safe if a future
+        // finding ever quotes the offending line back to the caller.
+        let out = json_string("a\tb\rc");
+        assert_eq!(out, "\"a\\tb\\rc\"");
+    }
 }
