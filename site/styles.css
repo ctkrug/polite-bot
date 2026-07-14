@@ -572,10 +572,25 @@ textarea:focus-visible {
 }
 
 .site-footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--surface-2);
   color: var(--text-muted);
   font-size: 0.8rem;
+}
+
+.portfolio-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color var(--motion-ui);
+}
+
+.portfolio-link:hover {
+  color: var(--accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
