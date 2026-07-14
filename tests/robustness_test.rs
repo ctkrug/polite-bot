@@ -1,9 +1,9 @@
-//! Regression coverage for docs/BACKLOG.md story 4.2: the analyzer and the
-//! robots.txt parser must never panic on arbitrary input, however garbled.
-//! Uses a small deterministic xorshift PRNG (no `rand` dependency, no
-//! external entropy) so the run is reproducible.
+//! Regression coverage for docs/BACKLOG.md story 4.2: the analyzer, the
+//! robots.txt parser, and the fix generator must never panic on arbitrary
+//! input, however garbled. Uses a small deterministic xorshift PRNG (no
+//! `rand` dependency, no external entropy) so the run is reproducible.
 
-use politebot_core::{analyze, parse_robots};
+use politebot_core::{analyze, parse_robots, suggest_user_agent_fix};
 
 struct XorShift32(u32);
 
@@ -37,5 +37,37 @@ fn robots_parser_never_panics_on_random_byte_sequences() {
         let text = String::from_utf8_lossy(&bytes).to_string();
         let rules = parse_robots(&text);
         let _ = rules.is_allowed("AnyBot", "/some/path");
+    }
+}
+
+#[test]
+fn fixer_never_panics_on_random_byte_sequences() {
+    for seed in 1..200u32 {
+        let bytes = random_bytes(seed, 64);
+        let text = String::from_utf8_lossy(&bytes).to_string();
+        for line in 0..=text.lines().count() + 1 {
+            let _ = suggest_user_agent_fix(&text, line);
+        }
+    }
+}
+
+/// The fixer slices `source` at the byte offsets of the call's parentheses,
+/// so a multibyte UTF-8 char adjacent to a recognized call marker is the
+/// exact place a naive byte-index slice would panic on a non-char boundary.
+#[test]
+fn fixer_survives_multibyte_chars_around_call_markers() {
+    let adversarial = [
+        "fetch(café)",
+        "requests.get(δ)",
+        "  requests.post(build_url(\"→\"), café)",
+        "print('fetch(café)')",
+        "fetch(\"café",   // unbalanced paren, multibyte inside
+        "…requests.get(", // leading multibyte, no close paren
+        "fetch(😀)",
+    ];
+    for source in adversarial {
+        for line in 0..=2 {
+            let _ = suggest_user_agent_fix(source, line);
+        }
     }
 }
