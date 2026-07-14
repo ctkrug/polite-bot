@@ -87,7 +87,7 @@ The first epic is the demo. Nothing else gets built before this works.
   - The analyzer never panics on arbitrary UTF-8 input (covered by a
     property-style regression test alongside the existing unit tests).
 
-- [ ] **4.3 — Landing page & docs.**
+- [x] **4.3 — Landing page & docs.**
   - `site/` opens directly into the paste-and-score workspace (per
     `docs/DESIGN.md` layout intent) with a one-line tagline explaining the
     wow moment — no separate marketing page to click through first.
