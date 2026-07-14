@@ -3,6 +3,8 @@
 //! request call shapes the analyzer already recognizes; unsupported shapes
 //! return `None` rather than guessing at a broken patch.
 
+use crate::json::encode as json_string;
+
 /// A suggested fix for a single finding: a unified-diff-style snippet and
 /// the fully patched source, ready to copy back into the editor.
 #[derive(Debug, Clone)]
@@ -178,22 +180,4 @@ fn find_matching_close_paren(line: &str, open: usize) -> Option<usize> {
         }
     }
     None
-}
-
-fn json_string(s: &str) -> String {
-    let mut out = String::with_capacity(s.len() + 2);
-    out.push('"');
-    for c in s.chars() {
-        match c {
-            '"' => out.push_str("\\\""),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            c if (c as u32) < 0x20 => out.push_str(&format!("\\u{:04x}", c as u32)),
-            c => out.push(c),
-        }
-    }
-    out.push('"');
-    out
 }

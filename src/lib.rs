@@ -5,6 +5,7 @@
 
 mod analyzer;
 mod fixer;
+mod json;
 mod robots;
 
 use wasm_bindgen::prelude::*;

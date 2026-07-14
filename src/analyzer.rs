@@ -3,6 +3,7 @@
 //! This is the heuristic seed BUILD expands with framework-specific
 //! detection (Story 2.1/2.2 in docs/BACKLOG.md).
 
+use crate::json::encode as json_string;
 use std::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -61,24 +62,6 @@ impl PolitenessScore {
             self.verdict, findings
         )
     }
-}
-
-fn json_string(s: &str) -> String {
-    let mut out = String::with_capacity(s.len() + 2);
-    out.push('"');
-    for c in s.chars() {
-        match c {
-            '"' => out.push_str("\\\""),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            c if (c as u32) < 0x20 => out.push_str(&format!("\\u{:04x}", c as u32)),
-            c => out.push(c),
-        }
-    }
-    out.push('"');
-    out
 }
 
 const BACKOFF_SIGNALS: &[&str] = &[
@@ -203,19 +186,4 @@ fn first_request_line(source: &str) -> usize {
         .find(|(_, line)| REQUEST_SIGNALS.iter().any(|kw| line.contains(kw)))
         .map(|(i, _)| i + 1)
         .unwrap_or(1)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::json_string;
-
-    #[test]
-    fn json_string_escapes_control_characters() {
-        // Findings never embed raw user source today, but json_string is
-        // the same hand-rolled encoder fixer.rs uses for user-controlled
-        // text — keep it correct per RFC 8259 so it stays safe if a future
-        // finding ever quotes the offending line back to the caller.
-        let out = json_string("a\tb\rc");
-        assert_eq!(out, "\"a\\tb\\rc\"");
-    }
 }
