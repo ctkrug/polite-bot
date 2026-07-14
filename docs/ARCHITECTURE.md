@@ -11,6 +11,7 @@ src/            politebot-core: the Rust engine, compiled to wasm
   analyzer.rs   static analysis of pasted scraper source (Verdict/Finding)
   robots.rs     from-scratch robots.txt parser (RobotsRules)
   fixer.rs      one-click "add User-Agent" fix-diff generator
+  json.rs       shared RFC 8259 string encoder for the hand-rolled to_json
 tests/          integration tests, one file per module + a fuzz-style
                 panic-freedom regression suite
 site/           the static front end — plain HTML/CSS/JS, no build step
@@ -64,9 +65,9 @@ call anywhere in this flow.
   bracket-depth-aware so nested calls patch correctly. Returns `None` for
   call shapes it doesn't recognize rather than guessing at a broken patch.
 - **`lib.rs`** — the wasm-bindgen boundary. Every export takes/returns
-  primitives (`&str`, `String`, `bool`) and hand-rolls JSON (see
-  `to_json`/`json_string` in each module) so no serde dependency is needed
-  across the boundary.
+  primitives (`&str`, `String`, `bool`) and hand-rolls JSON (each module's
+  `to_json` escapes strings through `json::encode`) so no serde dependency is
+  needed across the boundary.
 
 ## Front end (`site/`)
 
