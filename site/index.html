@@ -29,7 +29,7 @@
   <body>
     <header class="site-header">
       <div class="wordmark">polite_bot<span class="cursor" aria-hidden="true">&#9608;</span></div>
-      <p class="tagline">paste a scraper, get a politeness score</p>
+      <p class="tagline">score your scraper before a site bans you</p>
       <a class="repo-link" href="https://github.com/ctkrug/polite-bot" target="_blank" rel="noopener">
         source
       </a>
@@ -86,7 +86,7 @@
             <textarea
               id="robots-txt"
               spellcheck="false"
-              placeholder="paste the target's robots.txt (optional — empty means allow-all)"
+              placeholder="paste the target's robots.txt (optional: empty means allow-all)"
             ></textarea>
           </label>
           <div id="robots-result" class="robots-result" aria-live="polite">
@@ -95,6 +95,89 @@
         </div>
       </section>
     </main>
+
+    <section class="about" aria-labelledby="about-title">
+      <div class="about-inner">
+        <h1 id="about-title" class="about-title">How to scrape a website politely</h1>
+        <p class="about-lead">
+          Polite scraping comes down to three habits: tell the site who you are with a real
+          User-Agent, leave a gap between requests instead of hammering the server, and honor the
+          paths the site blocks in its robots.txt. polite_bot reads your scraper's source and checks
+          all three before you run it, so you catch the missing header or the back-to-back request
+          loop on your screen instead of in a 429 or an IP ban. Paste a Python
+          <code>requests</code> loop or a JavaScript <code>fetch</code> above and you get a red,
+          yellow, or green verdict in about a second, with the exact line to fix. Nothing you paste
+          leaves your browser: the analysis runs in a Rust engine compiled to WebAssembly.
+        </p>
+
+        <div class="about-grid">
+          <article class="about-card">
+            <h2>Identify yourself</h2>
+            <p>
+              A request with no User-Agent, or the default <code>python-requests/2.x</code> string,
+              is the first thing a rate limiter flags and the hardest for a site owner to trace back
+              to you before they block your IP. polite_bot points at the request line and hands you a
+              one-click header to paste back into the call.
+            </p>
+          </article>
+          <article class="about-card">
+            <h2>Space out your requests</h2>
+            <p>
+              Back-to-back requests are the fastest way to trip a WAF or earn a 429. polite_bot looks
+              for <code>time.sleep</code>, <code>asyncio.sleep</code>, <code>setTimeout</code>, and
+              backoff libraries like <code>tenacity</code>, and flags the loop that fires with none of
+              them.
+            </p>
+          </article>
+          <article class="about-card">
+            <h2>Respect robots.txt</h2>
+            <p>
+              Paste the target's robots.txt and a path into the cross-check panel. The built-in
+              parser resolves <code>User-agent</code> groups and <code>Allow</code>/<code>Disallow</code>
+              longest-match precedence, so it reads the file the way a real crawler does, not with a
+              guessy regex.
+            </p>
+          </article>
+        </div>
+
+        <h2 class="faq-title">Frequently asked questions</h2>
+        <dl class="faq">
+          <dt>How do you scrape a website politely?</dt>
+          <dd>
+            Set a descriptive User-Agent with a contact URL, add a delay or backoff between requests
+            (start near one request per second and adjust to the site's Crawl-delay), and check the
+            site's robots.txt before you request a path. polite_bot checks your code for the first
+            two and cross-checks robots.txt for the third.
+          </dd>
+          <dt>What are web scraping rate limit best practices?</dt>
+          <dd>
+            Send one request at a time with a pause between them rather than firing a whole loop at
+            once, honor any Crawl-delay the site publishes, back off (ideally exponentially) when you
+            get a 429 or 503, and cache responses so you never re-request the same page. polite_bot
+            flags a request loop with no sleep or backoff call so you fix the worst offender first.
+          </dd>
+          <dt>Is this a robots.txt checker?</dt>
+          <dd>
+            Yes, and then some. The robots.txt panel is a real parser: it groups User-agent blocks
+            and applies Allow/Disallow longest-match precedence, so it agrees with how Googlebot and
+            other crawlers actually read the file. It also reads your scraper's own code, which a
+            plain robots.txt checker never does.
+          </dd>
+          <dt>Does my code get uploaded anywhere?</dt>
+          <dd>
+            No. The whole analyzer is a Rust module compiled to WebAssembly that runs inside your
+            browser tab. There is no backend and no network request, so pasting a scraper with
+            internal URLs or API keys is safe.
+          </dd>
+          <dt>Which languages does it recognize?</dt>
+          <dd>
+            Python (<code>requests</code>, <code>urllib</code>) and JavaScript (<code>fetch</code>)
+            call shapes today. Source it doesn't recognize returns a yellow "check manually" verdict
+            instead of a false red.
+          </dd>
+        </dl>
+      </div>
+    </section>
 
     <template id="finding-template">
       <li class="finding">
